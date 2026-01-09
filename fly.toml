@@ -1,0 +1,47 @@
+# fly.toml file for Fly.io deployment
+
+app = "pokémon-app"  # Replace with your actual app name
+primary_region = "iad"
+
+[build]
+  builder = "heroku"
+
+[env]
+  PORT = "8080"
+
+[deploy]
+  release_command = "npm run build"
+
+[[services]]
+  internal_port = 8080
+  processes = ["app"]
+  protocol = "tcp"
+  script_checks = []
+
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "1s"
+    interval = "15s"
+    timeout = "2s"
+    type = "connect"
+
+  [[services.http_checks]]
+    interval = 10000
+    timeout = 2000
+    grace_period = "5s"
+    method = "get"
+    path = "/health"
+    protocol = "http"
+    restart_limit = 0

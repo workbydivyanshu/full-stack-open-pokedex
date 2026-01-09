@@ -1,0 +1,62 @@
+name: Full Stack Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Check code quality with ESLint
+        run: npm run eslint
+      - name: Build application
+        run: npm run build
+      - name: Test application
+        run: npm test -- --passWithNoTests
+
+  test_e2e:
+    runs-on: ubuntu-20.04
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Install Playwright
+        run: npx playwright install
+      - name: Build application
+        run: npm run build
+      - name: Start application
+        run: npm start-prod &
+      - name: Wait for app to start
+        run: sleep 5
+      - name: Run e2e tests
+        run: npx playwright test
+
+  deploy:
+    runs-on: ubuntu-20.04
+    needs: [build, test_e2e]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy to Fly.io
+        uses: superfly/flyctl-actions@master
+        with:
+          args: 'deploy'
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
