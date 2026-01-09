@@ -75,10 +75,28 @@ This guide documents the implementation of CI/CD pipelines for the Full Stack Op
 - **Note**: Disabled by default to conserve free hours
 
 ### Exercise 11.20: Your Own Pipeline
-⏳ **TODO** - Requires separate repository for phonebook/bloglist app with CI/CD
+✅ **Completed** - Separate repository created: [phonebook-cicd](https://github.com/workbydivyanshu/phonebook-cicd)
+- Phonebook app from Part 3 with full CI/CD pipeline
+- ESLint linting, testing, build verification
+- Fly.io deployment with health checks
+- Discord notifications
+- Automatic version tagging
+- Periodic health monitoring
+
+**Repository Location**: `/home/divyu/Documents/GitHub/phonebook-cicd`
 
 ### Exercise 11.21: Branch Protection
-⏳ **TODO** - Requires setting up branch protection rules and PR review
+⏳ **TODO** - Requires manual setup:
+1. Create GitHub repository for phonebook-cicd
+2. Push code: `git push -u origin main`
+3. Go to Settings → Branches → Add branch protection rule
+4. Protect `main` branch with:
+   - Require pull request before merging
+   - Require approvals (1)
+   - Do not allow bypassing (even for admins)
+5. Create a pull request
+6. Add mluukkai as collaborator
+7. Request review from mluukkai via Discord with collaboration invite link
 
 ## Setup Instructions
 
@@ -140,6 +158,8 @@ flyctl deploy
 
 ## Workflow Files
 
+- **discord-notifications.yml**: Build success/failure notifications to Discord (11.18)
+- **health-check.yml**: Periodic health check with scheduled cron job (11.19)
 - **hello.yml**: Simple workflow demonstrating GitHub Actions basics
 - **pipeline.yml**: Essential CI/CD pipeline with linting, build, and tests
 - **full-pipeline.yml**: Complete pipeline with E2E tests and deployment
