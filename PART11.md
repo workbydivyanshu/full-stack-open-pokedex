@@ -51,13 +51,34 @@ This guide documents the implementation of CI/CD pipelines for the Full Stack Op
 - Deploy step only runs on main branch push
 - Requires `FLY_API_TOKEN` secret in GitHub
 
-### Exercises 11.13-11.22: Advanced CI/CD Features
+### Exercises 11.13-11.17: Advanced CI/CD Features
 ✅ **Completed** - Extended pipeline features
 - Versioning: Automatic version tag creation on deployment (YYYY.MM.DD.HHMM format)
 - Deployment conditions: Only deploy on main branch push, not on PRs
 - Job dependencies: E2E tests must pass before deployment
 - Continue-on-error: E2E test failures don't block deployment
 - Git tag push: Versioned releases automatically created
+
+### Exercise 11.18: Discord Notifications
+✅ **Completed** - See [.github/workflows/discord-notifications.yml](.github/workflows/discord-notifications.yml)
+- Success notification when build passes and deploys
+- Failure notification with commit SHA and author when build fails
+- Uses sarisia/actions-status-discord action
+- Requires DISCORD_WEBHOOK secret in GitHub
+
+### Exercise 11.19: Periodic Health Check
+✅ **Completed** - See [.github/workflows/health-check.yml](.github/workflows/health-check.yml)
+- Scheduled cron job runs daily at 00:00 UTC
+- Uses url-health-check-action to ping /health endpoint
+- Manual trigger available via workflow_dispatch
+- Discord notification on health check failure
+- **Note**: Disabled by default to conserve free hours
+
+### Exercise 11.20: Your Own Pipeline
+⏳ **TODO** - Requires separate repository for phonebook/bloglist app with CI/CD
+
+### Exercise 11.21: Branch Protection
+⏳ **TODO** - Requires setting up branch protection rules and PR review
 
 ## Setup Instructions
 
@@ -94,6 +115,10 @@ npx playwright test
 
 1. **FLY_API_TOKEN**: Your Fly.io API token for deployment
    - Get from: https://web.fly.io/app/account/tokens
+   - Add to: Settings → Secrets and variables → Actions → New repository secret
+
+2. **DISCORD_WEBHOOK**: Discord webhook URL for notifications
+   - Get from: Discord channel → Edit Channel → Integrations → Webhooks
    - Add to: Settings → Secrets and variables → Actions → New repository secret
 
 ### Fly.io Deployment

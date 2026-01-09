@@ -1,0 +1,28 @@
+name: Periodic Health Check
+
+on:
+  schedule:
+    # Run health check every 24 hours at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual trigger for testing
+
+jobs:
+  health_check:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check deployment health
+        uses: jtalk/url-health-check-action@v3
+        with:
+          url: https://your-pokedex-app.fly.dev/health
+          max-attempts: 3
+          retry-delay: 5s
+      - name: Notify on health check failure
+        uses: sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: 'Failure'
+          title: "Health Check Failed"
+          description: "The application health check failed! Please investigate."
+          color: 0xff0000
+          username: GitHub Actions
